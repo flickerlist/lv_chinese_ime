@@ -178,7 +178,7 @@ static void parse_match_dict(lv_obj_t * kb)
     cjson_parse_result = cJSON_Parse(lv_chinese_ime->dict);
     if(cjson_parse_result == NULL)
     {
-        printf("parse fail.\n");
+        // printf("parse fail.\n");
         return;
     }
 

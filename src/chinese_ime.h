@@ -70,6 +70,21 @@ void lv_chinese_ime_set_dict(const char * dict);
  */
 void lv_chinese_ime_set_text_font(const lv_font_t * value, lv_style_selector_t selector);
 
+/**
+ * Set font panel realign to keyboard
+ */
+void lv_chinese_ime_font_panel_align(lv_obj_t* obj);
+
+/**
+ * Hide font panel (call when hide keyboard)
+ */
+void lv_chinese_ime_font_panel_hidden();
+
+/**
+ * Set font panel visible (call when remove hidden mark of keyboard)
+ */
+void lv_chinese_ime_font_panel_visible();
+
 
 /*=====================
  * Setter functions

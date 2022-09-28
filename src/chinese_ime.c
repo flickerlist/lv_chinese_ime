@@ -29,7 +29,7 @@ static void lv_chinese_ime_def_event_cb(lv_event_t * e);
 static void parse_match_dict(lv_obj_t * keyboard);
 static void select_font_event_cb(lv_event_t * e);
 static void lv_chinese_ime_destruct(void);
-static void delete_async(void* arg);
+static void lv_chinese_ime_del_async(void* arg);
 
 /**********************
  *  STATIC VARIABLES
@@ -63,7 +63,7 @@ lv_obj_t * lv_chinese_ime_create(lv_obj_t * parent)
 /**
  * Delete keyboard async to avoid delete issue
  */
-static void delete_async(void* arg)
+static void lv_chinese_ime_del_async(void* arg)
 {
     lv_obj_del((lv_obj_t*)arg);
 }
@@ -76,7 +76,7 @@ void lv_chinese_ime_del(lv_obj_t * obj)
 {
     lv_chinese_ime_destruct();
     lv_obj_clean(obj);
-    lv_async_call(delete_async, obj);
+    lv_async_call(lv_chinese_ime_del_async, obj);
 }
 
 
@@ -217,26 +217,28 @@ static void parse_match_dict(lv_obj_t * kb)
  */
 static void lv_chinese_ime_constructor(lv_obj_t * obj)
 {
-	static lv_style_t panel_style;      // 摆放文字展示的面板样式
+	  static lv_style_t panel_style;      // 摆放文字展示的面板样式
 
     /* 申请内存 */
-	lv_chinese_ime = (lv_chinese_ime_t *)lv_mem_alloc(sizeof(lv_chinese_ime_t));
+	  lv_chinese_ime = (lv_chinese_ime_t *)lv_mem_alloc(sizeof(lv_chinese_ime_t));
 
-	/* 摆放文字展示的面板样式 */
-	lv_style_init(&panel_style);
-	lv_style_set_bg_opa(&panel_style, 0);
-	lv_style_set_border_opa(&panel_style, 0);
-	lv_style_set_radius(&panel_style, 0);
-	lv_style_set_pad_all(&panel_style, 0);
+	  /* 摆放文字展示的面板样式 */
+	  lv_style_init(&panel_style);
+	  lv_style_set_radius(&panel_style, 0);
+	  lv_style_set_pad_ver(&panel_style, 10);
+    lv_style_set_border_color(&panel_style, lv_color_make(0x99, 0x99, 0x99));
+    lv_style_set_border_width(&panel_style, 1);
+    lv_style_set_border_side(&panel_style, LV_BORDER_SIDE_TOP);
+    
 
-	lv_chinese_ime->dict = zh_cn_pinyin_dict;
+	  lv_chinese_ime->dict = zh_cn_pinyin_dict;
     lv_chinese_ime->ta_count = 0;
     memset(lv_chinese_ime->input_char, 0, sizeof(lv_chinese_ime->input_char));
 
-    //lv_chinese_ime->font_panel = lv_obj_create(obj);
-    lv_chinese_ime->font_panel = lv_obj_create(lv_scr_act());
-    //lv_obj_clear_flag(lv_chinese_ime->font_panel, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_size(lv_chinese_ime->font_panel, LV_PCT(100), LV_PCT(4));
+    // lv_chinese_ime->font_panel = lv_obj_create(obj);
+    lv_chinese_ime->font_panel = lv_obj_create(lv_layer_top());
+    lv_obj_clear_flag(lv_chinese_ime->font_panel, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_set_size(lv_chinese_ime->font_panel, LV_PCT(100), 40);
     lv_obj_set_flex_flow(lv_chinese_ime->font_panel, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(lv_chinese_ime->font_panel, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     lv_obj_align_to(lv_chinese_ime->font_panel, obj, LV_ALIGN_OUT_TOP_MID, 0, 0);
@@ -251,6 +253,28 @@ static void lv_chinese_ime_destruct(void)
 {
     lv_obj_del(lv_chinese_ime->font_panel);
     lv_mem_free(lv_chinese_ime);
+}
+
+/**
+ * Set font panel realign to keyboard
+ */
+void lv_chinese_ime_font_panel_align(lv_obj_t* obj) {
+  lv_obj_align_to(lv_chinese_ime->font_panel, obj, LV_ALIGN_OUT_TOP_MID, 0, 0);
+}
+
+/**
+ * Hide font panel (call when hide keyboard)
+ */
+void lv_chinese_ime_font_panel_hidden() {
+  lv_obj_add_flag(lv_chinese_ime->font_panel, LV_OBJ_FLAG_HIDDEN);
+
+}
+
+/**
+ * Set font panel visible (call when remove hidden mark of keyboard)
+ */
+void lv_chinese_ime_font_panel_visible() {
+  lv_obj_clear_flag(lv_chinese_ime->font_panel, LV_OBJ_FLAG_HIDDEN);
 }
 
 #endif  /*LV_CHINESE_IME*/

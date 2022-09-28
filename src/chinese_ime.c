@@ -225,10 +225,11 @@ static void lv_chinese_ime_constructor(lv_obj_t * obj)
 	  /* 摆放文字展示的面板样式 */
 	  lv_style_init(&panel_style);
 	  lv_style_set_radius(&panel_style, 0);
-	  lv_style_set_pad_ver(&panel_style, 10);
+	  lv_style_set_pad_ver(&panel_style, 0);
+	  lv_style_set_pad_hor(&panel_style, 15);
     lv_style_set_border_color(&panel_style, lv_color_make(0x99, 0x99, 0x99));
     lv_style_set_border_width(&panel_style, 1);
-    lv_style_set_border_side(&panel_style, LV_BORDER_SIDE_TOP);
+    lv_style_set_border_side(&panel_style, LV_BORDER_SIDE_TOP + LV_BORDER_SIDE_BOTTOM);
     
 
 	  lv_chinese_ime->dict = zh_cn_pinyin_dict;
@@ -238,7 +239,7 @@ static void lv_chinese_ime_constructor(lv_obj_t * obj)
     // lv_chinese_ime->font_panel = lv_obj_create(obj);
     lv_chinese_ime->font_panel = lv_obj_create(lv_layer_top());
     lv_obj_clear_flag(lv_chinese_ime->font_panel, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_size(lv_chinese_ime->font_panel, LV_PCT(100), 40);
+    lv_obj_set_size(lv_chinese_ime->font_panel, LV_PCT(100), 50);
     lv_obj_set_flex_flow(lv_chinese_ime->font_panel, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(lv_chinese_ime->font_panel, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     lv_obj_align_to(lv_chinese_ime->font_panel, obj, LV_ALIGN_OUT_TOP_MID, 0, 0);

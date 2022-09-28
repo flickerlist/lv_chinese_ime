@@ -29,6 +29,7 @@ static void lv_chinese_ime_def_event_cb(lv_event_t * e);
 static void parse_match_dict(lv_obj_t * keyboard);
 static void select_font_event_cb(lv_event_t * e);
 static void lv_chinese_ime_destruct(void);
+static void delete_async(void* arg);
 
 /**********************
  *  STATIC VARIABLES
@@ -60,13 +61,22 @@ lv_obj_t * lv_chinese_ime_create(lv_obj_t * parent)
 }
 
 /**
+ * Delete keyboard async to avoid delete issue
+ */
+static void delete_async(void* arg)
+{
+    lv_obj_del((lv_obj_t*)arg);
+}
+
+/**
  * This is the inheritance and customization of "lv_obj_del".
  * @param obj       pointer to an object
  */
 void lv_chinese_ime_del(lv_obj_t * obj)
 {
     lv_chinese_ime_destruct();
-    lv_obj_del(obj);
+    lv_obj_clean(obj);
+    lv_async_call(delete_async, obj);
 }
 
 
